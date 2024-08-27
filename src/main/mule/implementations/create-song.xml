@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="c5a16859-3451-4228-b386-a5b39d8869da" >
+		<db:oracle-connection host="localhost" user="system" password="admin" instance="XE" />
+	</db:config>
+	<flow name="create-songFlow" doc:id="6290977c-4139-4eaa-b126-9b4280050293" >
+		<http:listener doc:name="Listener" doc:id="5bd51edc-cb06-45d9-b710-b1483eb33713" config-ref="music-app-practice-httpListenerConfig" path="/music"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0988a1bd-00d0-40bb-91c7-958ac0d924cf" />
+		<ee:transform doc:name="Transform Message" doc:id="41bd4b63-d893-438f-bf42-03a26cbb697f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:insert doc:name="Insert" doc:id="18963c29-8df1-459d-a037-4bf15e319ed4" config-ref="Database_Config" autoGenerateKeys="true">
+			<db:sql ><![CDATA[INSERT INTO music_master (name, singer)
+VALUES (:name, :singer)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+			<db:auto-generated-keys-column-names >
+				<db:auto-generated-keys-column-name value="#['id']" />
+				<db:auto-generated-keys-column-name value="#['name']" />
+				<db:auto-generated-keys-column-name value="#['singer']" />
+			</db:auto-generated-keys-column-names>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="e20df0e7-ffd0-4e5f-b5eb-e5666ae23ae2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"id": payload.generatedKeys.ID,
+	"name": payload.generatedKeys.NAME,
+	"singer": payload.generatedKeys.SINGER
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="67b5d6d4-3cc3-4166-a914-2c005bf6f5fe" message="Ended logger"/>
+	</flow>
+</mule>

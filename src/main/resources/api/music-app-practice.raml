@@ -1,0 +1,312 @@
+#%RAML 1.0
+title: music-app-practice
+baseUri: http://localhost:8081
+
+traits:
+  correlation-id-header: !include exchange_modules/a4677e7e-419a-4e96-a79a-3c750b756bbd/x-correlation-id-header/1.0.0/x-correlation-id-header.raml
+  transaction-id-header: !include exchange_modules/a4677e7e-419a-4e96-a79a-3c750b756bbd/x-transaction-id-header/1.0.0/x-transaction-id-header.raml
+
+/music:
+  get:
+    description: Show all musics
+    is:
+      - correlation-id-header
+      - transaction-id-header
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            description: contains all music property 
+            items:
+              type: object
+              properties:
+                id:
+                  type: number
+                  description: id song
+                  example: 1
+                name:
+                  type: string 
+                  description: name song
+                  example: "Có khi"
+                singer:
+                  type: string
+                  description: singer name
+                  example: "Madihu x LowG"
+      400:
+        body:
+          application/json:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "404"
+              message:
+                type: string
+                example: "Bad request"
+              description:
+                type: string
+                example: "object has missing required"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+      500:
+        body:
+          application/json:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "500"
+              message:
+                type: string
+                example: "Internal server error"
+              description:
+                type: string
+                example: "The server encountered an unexpected condition which prevented it from fulfilling the request"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+  post:
+    description: create a song 
+    is:
+      - correlation-id-header
+      - transaction-id-header
+    body:
+      application/json:
+        type: object
+        properties:
+          name:
+            type: string
+            description: name song
+            example: "Có khi"
+          singer:
+            type: string
+            description: singer
+            example: "Madihu x LowG"
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties:
+              id:
+                type: number
+                description: id song
+                example: 1
+              name:
+                type: string 
+                description: name song
+                example: "Có khi"
+              singer:
+                type: string
+                description: singer name
+                example: "Madihu x LowG"
+      400:
+        body:
+          application/json:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "404"
+              message:
+                type: string
+                example: "Bad request"
+              description:
+                type: string
+                example: "object has missing required"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+      500:
+        body:
+          application/json:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "500"
+              message:
+                type: string
+                example: "Internal server error"
+              description:
+                type: string
+                example: "The server encountered an unexpected condition which prevented it from fulfilling the request"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+  put:
+    is:
+      - correlation-id-header
+      - transaction-id-header
+    description: Update song
+    body:
+      application/json:
+        type: object
+        properties:
+          id:
+            type: number
+            example: 1
+          name: 
+            type: string
+            example: "Không còn em"
+          singer:
+            type: string
+            example: "Madihu"
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties:
+              id:
+                type: number
+                description: id song
+                example: 1
+              name:
+                type: string 
+                description: name song
+                example: "Có khi"
+              singer:
+                type: string
+                description: singer name
+                example: "Madihu x LowG"
+      400:
+        body:
+          application/json:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "404"
+              message:
+                type: string
+                example: "Bad request"
+              description:
+                type: string
+                example: "object has missing required"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+      500:
+        body:
+          application/json:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "500"
+              message:
+                type: string
+                example: "Internal server error"
+              description:
+                type: string
+                example: "The server encountered an unexpected condition which prevented it from fulfilling the request"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+/music/{id}:                
+  delete:
+    is:
+      - correlation-id-header
+      - transaction-id-header
+    description: Delete a song
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties: 
+              code:
+                  type: string
+                  example: "200"
+              message:
+                type: string
+                example: "Success"
+              description:
+                type: string
+                example: "Delete Successful"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+            
+      400:
+        body:
+          application/json:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "404"
+              message:
+                type: string
+                example: "Bad request"
+              description:
+                type: string
+                example: "object has missing required"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+      500:
+        body:
+          application/json:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "500"
+              message:
+                type: string
+                example: "Internal server error"
+              description:
+                type: string
+                example: "The server encountered an unexpected condition which prevented it from fulfilling the request"
+              dateTime: 
+                type: datetime
+                example: "2024-07-08T16:44:42Z"
+              transactionId:
+                type: string
+                example: "71890f75-4273-46b3-9950-1e2091fd9d93"
+/welocme:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: 
+              {
+                "message": "Welcome world"
+              }
+              
+
+          
+    
+
+                     
+                     
+              
